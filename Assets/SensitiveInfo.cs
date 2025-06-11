@@ -6,8 +6,8 @@ using System.Text;
 public class SensitiveInfo
 {
     public static readonly string SERVER_DATABASE_PREFIX = "https://berrydash.lncvrt.xyz/database/";
-    public static readonly string SERVER_RECEIVE_TRANSFER_KEY = "8ee65fa76b730a199c76729a89d1a814";
-    public static readonly string SERVER_SEND_TRANSFER_KEY = "39b31ea0821db3854066526aa57ba39a";
+    public static readonly string SERVER_RECEIVE_TRANSFER_KEY = "";
+    public static readonly string SERVER_SEND_TRANSFER_KEY = "";
 
     public static string Encrypt(string plainText, string key)
     {
