@@ -3,7 +3,6 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LeaderboardsMenu : MonoBehaviour
@@ -95,7 +94,7 @@ public class LeaderboardsMenu : MonoBehaviour
         EncryptedWWWForm dataForm = new();
         dataForm.AddField("type", "0");
         using UnityWebRequest request = UnityWebRequest.Post(SensitiveInfo.SERVER_DATABASE_PREFIX + "getTopPlayers.php", dataForm.GetWWWForm());
-        request.SetRequestHeader("Requester", "BerryDashClient");
+        request.SetRequestHeader("Requester", "BerryDashLeaderboardsClient");
         request.SetRequestHeader("ClientVersion", Application.version);
         request.SetRequestHeader("ClientPlatform", Application.platform.ToString());
         await request.SendWebRequest();
@@ -145,7 +144,7 @@ public class LeaderboardsMenu : MonoBehaviour
                     {
                         playerIcon.sprite = Tools.GetIconForUser(int.Parse(uid));
                     }
-                    playerOverlayIcon.sprite = Resources.Load<Sprite>("Icons/overlay_" + overlay);
+                    playerOverlayIcon.sprite = Resources.Load<Sprite>("Overlays/overlay_" + overlay);
                     if (overlay == "0")
                     {
                         playerOverlayIcon.gameObject.SetActive(false);
@@ -191,7 +190,7 @@ public class LeaderboardsMenu : MonoBehaviour
         dataForm.AddField("showType", showAmount.ToString());
         dataForm.AddField("type", "1");
         using UnityWebRequest request = UnityWebRequest.Post(SensitiveInfo.SERVER_DATABASE_PREFIX + "getTopPlayers.php", dataForm.GetWWWForm());
-        request.SetRequestHeader("Requester", "BerryDashClient");
+        request.SetRequestHeader("Requester", "BerryDashLeaderboardsClient");
         request.SetRequestHeader("ClientVersion", Application.version);
         request.SetRequestHeader("ClientPlatform", Application.platform.ToString());
         await request.SendWebRequest();
@@ -241,7 +240,7 @@ public class LeaderboardsMenu : MonoBehaviour
                     {
                         playerIcon.sprite = Tools.GetIconForUser(int.Parse(uid));
                     }
-                    playerOverlayIcon.sprite = Resources.Load<Sprite>("Icons/overlay_" + overlay);
+                    playerOverlayIcon.sprite = Resources.Load<Sprite>("Overlays/overlay_" + overlay);
                     if (overlay == "0")
                     {
                         playerOverlayIcon.gameObject.SetActive(false);
