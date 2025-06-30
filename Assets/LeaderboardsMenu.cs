@@ -8,6 +8,8 @@ using UnityEngine.UI;
 public class LeaderboardsMenu : MonoBehaviour
 {
     public TMP_Text statusText;
+    public Button backButton;
+    public Button refreshButton;
 
     public GameObject selectionPanel;
     public Button selectionScoreButton;
@@ -15,15 +17,11 @@ public class LeaderboardsMenu : MonoBehaviour
 
     public GameObject scorePanel;
     public GameObject scoreContent;
-    public Button scoreBackButton;
-    public Button scoreRefreshButton;
     public GameObject scoreSampleObject;
 
     public GameObject berryPanel;
     public GameObject berryContent;
     public TMP_Dropdown berryShowTypeDropdown;
-    public Button berryBackButton;
-    public Button berryRefreshButton;
     public GameObject berrySampleObject;
 
     void Awake()
@@ -31,15 +29,19 @@ public class LeaderboardsMenu : MonoBehaviour
         selectionScoreButton.onClick.AddListener(() => SwitchMenu(1));
         selectionBerryButton.onClick.AddListener(() => SwitchMenu(2));
 
-        scoreBackButton.onClick.AddListener(() => SwitchMenu(0));
-        scoreRefreshButton.onClick.AddListener(() => GetTopPlayersScore());
-
         berryShowTypeDropdown.onValueChanged.AddListener(value => GetTopPlayersBerry(value));
-        berryBackButton.onClick.AddListener(() => SwitchMenu(0));
-        berryRefreshButton.onClick.AddListener(() => GetTopPlayersBerry(berryShowTypeDropdown.value));
+
+
+        backButton.onClick.AddListener(() => SwitchMenu(0));
+        refreshButton.onClick.AddListener(() =>
+        {
+            if (scorePanel.activeSelf) GetTopPlayersScore();
+            else if (berryPanel.activeSelf) GetTopPlayersBerry(berryShowTypeDropdown.value);
+        });
     }
 
-    void SwitchMenu(int menu) {
+    void SwitchMenu(int menu)
+    {
         UpdateStatus(false, "");
         foreach (Transform item in scoreContent.transform)
         {
@@ -59,30 +61,38 @@ public class LeaderboardsMenu : MonoBehaviour
         switch (menu)
         {
             case 0:
+                refreshButton.gameObject.SetActive(false);
                 selectionPanel.SetActive(true);
                 scorePanel.SetActive(false);
                 berryPanel.SetActive(false);
+                backButton.gameObject.SetActive(false);
                 break;
             case 1:
+                refreshButton.transform.localPosition = new Vector2(-402.5f, -282.33f);
+                refreshButton.gameObject.SetActive(true);
                 GetTopPlayersScore();
                 selectionPanel.SetActive(false);
                 scorePanel.SetActive(true);
                 berryPanel.SetActive(false);
+                backButton.gameObject.SetActive(true);
                 break;
             case 2:
+                refreshButton.transform.localPosition = new Vector2(402.5f, 282.33f);
+                refreshButton.gameObject.SetActive(true);
                 berryShowTypeDropdown.value = 0;
                 GetTopPlayersBerry(0);
                 selectionPanel.SetActive(false);
                 scorePanel.SetActive(false);
                 berryPanel.SetActive(true);
+                backButton.gameObject.SetActive(true);
                 break;
         }
     }
 
     async void GetTopPlayersScore()
     {
-        scoreBackButton.interactable = false;
-        scoreRefreshButton.interactable = false;
+        backButton.interactable = false;
+        refreshButton.interactable = false;
         foreach (Transform item in scoreContent.transform)
         {
             if (item.gameObject.activeSelf)
@@ -114,6 +124,10 @@ public class LeaderboardsMenu : MonoBehaviour
             {
                 UpdateStatus(true, "Encryption/decryption issues");
             }
+            else if (response == "-996")
+            {
+                UpdateStatus(true, "Can't send requests on self-built instance");
+            }
             else if (response == "-1")
             {
                 UpdateStatus(true, "No entries for this leaderboard found!");
@@ -130,6 +144,12 @@ public class LeaderboardsMenu : MonoBehaviour
                     var icon = split[2];
                     var overlay = split[3];
                     var uid = split[4];
+                    var birdR = split[5];
+                    var birdG = split[6];
+                    var birdB = split[7];
+                    var overlayR = split[8];
+                    var overlayG = split[9];
+                    var overlayB = split[10];
 
                     var entryInfo = Instantiate(scoreSampleObject, scoreContent.transform);
                     var usernameText = entryInfo.transform.GetChild(0).GetComponent<TMP_Text>();
@@ -161,6 +181,16 @@ public class LeaderboardsMenu : MonoBehaviour
                     {
                         playerOverlayIcon.transform.localPosition = new Vector2(-16.54019f, 14.70365f);
                     }
+                    try
+                    {
+                        playerIcon.color = new Color32(byte.Parse(birdR), byte.Parse(birdG), byte.Parse(birdB), 255);
+                        playerOverlayIcon.color = new Color32(byte.Parse(overlayR), byte.Parse(overlayG), byte.Parse(overlayB), 255);
+                    }
+                    catch (Exception)
+                    {
+                        playerIcon.color = Color.white;
+                        playerOverlayIcon.color = Color.white;
+                    }
                     entryInfo.SetActive(true);
                 }
             }
@@ -169,15 +199,15 @@ public class LeaderboardsMenu : MonoBehaviour
         {
             UpdateStatus(true, "Failed to fetch leaderboard stats");
         }
-        scoreBackButton.interactable = true;
-        scoreRefreshButton.interactable = true;
+        backButton.interactable = true;
+        refreshButton.interactable = true;
     }
 
     async void GetTopPlayersBerry(int showAmount)
     {
         berryShowTypeDropdown.interactable = false;
-        berryBackButton.interactable = false;
-        berryRefreshButton.interactable = false;
+        backButton.interactable = false;
+        refreshButton.interactable = false;
         foreach (Transform item in berryContent.transform)
         {
             if (item.gameObject.activeSelf)
@@ -210,6 +240,10 @@ public class LeaderboardsMenu : MonoBehaviour
             {
                 UpdateStatus(true, "Encryption/decryption issues");
             }
+            else if (response == "-996")
+            {
+                UpdateStatus(true, "Can't send requests on self-built instance");
+            }
             else if (response == "-1")
             {
                 UpdateStatus(true, "No entries for this leaderboard found!");
@@ -226,6 +260,12 @@ public class LeaderboardsMenu : MonoBehaviour
                     var icon = split[2];
                     var overlay = split[3];
                     var uid = split[4];
+                    var birdR = split[5];
+                    var birdG = split[6];
+                    var birdB = split[7];
+                    var overlayR = split[8];
+                    var overlayG = split[9];
+                    var overlayB = split[10];
 
                     var entryInfo = Instantiate(berrySampleObject, berryContent.transform);
                     var usernameText = entryInfo.transform.GetChild(0).GetComponent<TMP_Text>();
@@ -257,6 +297,16 @@ public class LeaderboardsMenu : MonoBehaviour
                     {
                         playerOverlayIcon.transform.localPosition = new Vector2(-16.54019f, 14.70365f);
                     }
+                    try
+                    {
+                        playerIcon.color = new Color32(byte.Parse(birdR), byte.Parse(birdG), byte.Parse(birdB), 255);
+                        playerOverlayIcon.color = new Color32(byte.Parse(overlayR), byte.Parse(overlayG), byte.Parse(overlayB), 255);
+                    }
+                    catch (Exception)
+                    {
+                        playerIcon.color = Color.white;
+                        playerOverlayIcon.color = Color.white;
+                    }
                     entryInfo.SetActive(true);
                 }
             }
@@ -266,8 +316,8 @@ public class LeaderboardsMenu : MonoBehaviour
             UpdateStatus(true, "Failed to fetch leaderboard stats");
         }
         berryShowTypeDropdown.interactable = true;
-        berryBackButton.interactable = true;
-        berryRefreshButton.interactable = true;
+        backButton.interactable = true;
+        refreshButton.interactable = true;
     }
 
     private void UpdateStatus(bool enabled, string message = "")
